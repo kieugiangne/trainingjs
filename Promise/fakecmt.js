@@ -48,17 +48,27 @@ function getUsersByIds(userIds) {
 getComments()
     .then(function(comments) {
         var userIds = comments.map(function(comment) {
-            return comment.user_id;
+            return comment.users_id;
         });
         return getUsersByIds(userIds)
             .then(function(users) {
                 return {
-                    users: users,
-                    comments: comments,
-                };  
+                users: users,
+                comments: comments,
+                };
             });
     })
     .then(function(data) {
-        console.log(data);
+        
+        var commentBlock = document.getElementById('comment-block');
+
+        var html = '';
+        data.comments.forEach(function(comment) {
+            var user = data.users.find(function(user) {
+                return user.id === comment.user_id;
+            });
+            html += `${user.name}: ${comment.content}`;
+        });
+        commentBlock.innerHTML = html;
     });
 
